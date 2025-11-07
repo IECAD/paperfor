@@ -1,4 +1,3 @@
-1
 # 논문 #01: Analysis and Improvement of Indoor Positioning Accuracy for UWB Sensors (Sensors, 2021)
 
 ## 1) 기본 정보
