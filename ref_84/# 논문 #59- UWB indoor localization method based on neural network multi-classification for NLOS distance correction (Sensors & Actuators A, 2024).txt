@@ -1,0 +1,106 @@
+# 논문 #59: UWB indoor localization method based on neural network multi-classification for NLOS distance correction (Sensors & Actuators A, 2024)
+
+## 1) 기본 정보
+- **제목:** UWB indoor localization method based on neural network multi-classification for NLOS distance correction
+- **저자:** Cheng Tu, Jiabin Zhang, Zhi Quan, Yingqiang Ding
+- **저널/학회:** Sensors & Actuators: A. Physical
+- **출판연도:** 2024
+- **DOI/링크:** 10.1016/j.sna.2024.115904
+- **인용 횟수:** —
+
+**3줄 요약**
+1. **CNN–LSTM**으로 **LOS/NLOS+장애물 유형**까지 포함한 **36 클래스** 다중분류 수행.  
+2. 분류 결과와 **원시 UWB 거리**를 **MLP**에 함께 넣어 **실거리 예측** → **WLS 가중**에 반영.  
+3. **NLOS 인식 92.36%**, **예측거리 RMSE 0.3123 m**, **평균 위치오차 0.1223 m**로 원시 UWB 대비 **83.56% 개선**.
+
+**핵심 기여(Contribution)**
+- [x] **다중분류(CNN–LSTM)**로 채널/차폐상태 세분화
+- [x] **분류→거리보정(MLP)** 2단 구조 + **WLS** 연계
+- [x] DS-TWR 기반 실제 실험으로 성능 검증
+
+---
+
+## 2) 입력 데이터 (Input)
+- **원본 입력 형태**
+  - 데이터 타입: **CIR 시계열 + 원시 UWB 거리(TWR/DS-TWR)**
+  - 차원: 분류(36), 회귀(거리), 2D 위치
+- **전처리 (pseudo)**
+  1. CIR 표본화/정규화  
+  2. **CNN–LSTM** → 채널/차폐 **36-class**  
+  3. **[classification logits, raw range] → MLP** → **predicted distance**  
+  4. **WLS**에서 가중/반경 치환
+
+**우리 20D 입력과의 매핑**
+
+| 우리 특징 | 논문 특징 | 변환 방법 |
+|---|---|---|
+| CIR 통계/파형 | CNN–LSTM 다중분류 | 동일 파이프라인에 바로 호환 |
+| Range(거리) | 원시 거리 + MLP 보정 | 보정거리 채널로 대체/가중 |
+| 품질/게이팅 | 클래스 신뢰도 | R/Q 가중으로 매핑
+
+- **호환성 평가:** [x] 직접 사용 가능
+
+---
+
+## 3) 모델 아키텍처 (Architecture)
+[CIR] → [**CNN–LSTM(36-class)**] ⟂ [**raw range**] → [**MLP(실거리 예측)**] → [**WLS 위치**]
+
+**우리 모델과 비교**
+
+| 구성 요소 | 논문 | 우리 모델 | 차이점 |
+|---|---|---|---|
+| 채널판정 | CNN–LSTM | CNN/FCN/WT-CNN 등 | 다중분류 세분화 강조 |
+| 거리보정 | MLP | 통계/DL 혼합 | 가중 WLS로 일원화 |
+
+---
+
+## 4) 학습 방법 (Training)
+- **손실:** CE(36-class) + MSE(거리)
+- **전략:** 분류기 사전학습 → MLP 파인튜닝
+- **분할:** 실험 데이터/트랙 분할
+
+---
+
+## 5) 실험 및 결과 (Experiments)
+- **환경/장애물:** 인체/콘크리트/유리/금속선반/목문 등  
+- **평가 지표**
+
+| 지표 | 값 | 비고 |
+|---|---:|---|
+| NLOS 인식 정확도 | **92.36%** | 5종 장애물 |
+| 거리 RMSE | **0.3123 m** | 예측 vs GT |
+| 평균 위치오차 | **0.1223 m** | 3개 궤적 평균 |
+| 성능 개선율 | **83.56%** | 원시 UWB 대비 |
+
+- **Ablation:** LS vs **WLS**, 분류/보정 on/off
+
+---
+
+## 6) 우리 연구와의 관계
+- **유사점:** CIR 기반 판정 + 거리보정 + WLS  
+- **차이점:** **36-class** 세분화로 가중설계 정교화  
+- **활용 가능 요소 체크**
+  - [x] 다중분류 출력→R/Q 매핑
+  - [x] MLP 거리보정 모듈
+  - [x] Related Work 인용
+
+**벤치마킹 가치:** Related ⭐⭐⭐⭐ / 구현 ⭐⭐⭐⭐
+
+---
+
+## 7) 논문 작성 활용 메모
+- **초안:** “CIR 다중분류 + 거리 MLP 보정 + WLS”의 **연쇄 보정 파이프라인**이 NLOS 열화를 크게 완화.
+
+---
+
+## 8) 참고 자료
+- **프로토콜:** **DS-TWR**
+- **수식/모델:** TWR/WLS 유도식 제시
+
+---
+
+## 9) 구현 체크리스트
+- [ ] CNN–LSTM 다중분류기
+- [ ] MLP 거리보정기
+- [ ] WLS 가중 매핑(R/Q)
+- **우선순위:** 🟢 / **담당자:** — / **완료일:** YYYY-MM-DD

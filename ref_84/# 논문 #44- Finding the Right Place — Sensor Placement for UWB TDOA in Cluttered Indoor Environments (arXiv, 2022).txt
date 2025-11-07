@@ -1,0 +1,134 @@
+# 논문 #44: Finding the Right Place — Sensor Placement for UWB TDOA in Cluttered Indoor Environments (arXiv, 2022)
+
+## 1) 기본 정보
+- **제목:** Finding the Right Place: Sensor Placement for UWB Time Difference of Arrival Localization in Cluttered Indoor Environments
+- **저자:** Wenda Zhao, Abhishek Goudar, Angela P. Schoellig
+- **저널/학회:** arXiv (cs.RO)
+- **출판연도:** 2022
+- **DOI/링크:** —
+- **인용 횟수:** —
+**3줄 요약**
+1. **장애물로 인한 NLOS 바이어스**와 **기하학(앵커-태그 배치)**를 동시에 고려하는 **MSE 기반** TDoA 앵커 배치 최적화 제안.  
+2. **NLOS 모델(금속/비금속/차폐)**을 실험으로 구축하고, **FIM+바이어스 그래디언트**를 써서 MSE 하한을 유도.  
+3. 실제 2D/3D 실험에서 **RMSE 47%/76% 감소**(기본 배치 대비).
+
+**핵심 기여(Contribution)**
+- [x] 바이어스와 분산을 함께 반영한 **MSE 성능지표**  
+- [x] **BCM(block coordinate minimization)**로 앵커 위치 최적화  
+- [x] **최소 앵커 수 & 좌표** 동시 설계
+
+---
+
+## 2) 입력 데이터 (Input)
+- **원본 입력 형태**
+  - 데이터 타입: UWB **TDoA**(앵커쌍 차시각)
+  - 차원: 2D/3D
+  - 샘플링: 로깅 기반
+- **전처리 방법 (pseudo)**
+  1. 실내 공간 P, 관심영역 Φ 샘플링  
+  2. **레이 트레이싱**으로 LOS/NLOS 판정, NLOS 에러분포 매핑  
+  3. TDoA 분포 \(f(d|p,a)\) 구성 → FIM/I(p) 계산
+
+**우리 20D 입력과의 매핑**
+
+| 우리 특징 | 논문의 특징 | 변환 방법 |
+|----------|-------------|----------|
+| Anch 레이아웃 | MSE 최적 배치 | **사전 설계/툴링**에 통합 |
+| NLOS 파라미터 | 재질/차폐/각 | **맵+재질 LUT**와 연동 |
+| 품질지표 | 바이어스/분산 | **가중/게이팅** 근거로 사용 |
+
+- **호환성 평가**
+  - [x] 직접 사용 가능
+  - [ ] 약간의 변환 필요
+  - [ ] 큰 변환 필요
+  - [ ] 호환 불가
+
+---
+
+## 3) 모델 아키텍처 (Architecture)
+- **전체 구조**  
+[공간/장애물 맵] → [LOS/NLOS 모델링] → [FIM, Bias Jacobian] → [MSE 성능지표] → [**BCM 최적화**] → [앵커 좌표/개수]
+- **특수 모듈**
+  - FIM \(I(p)\), **Bias \(β(p)\)**, **Gradient \(D(p)\)**  
+  - **범위/차폐 가중** W (측정 불가 제거)
+- **파라미터 수**: 비DL(수치최적화)
+
+**우리 모델과 비교**
+
+| 구성 요소 | 논문 | 우리 모델 | 차이점 |
+|----------|------|----------|--------|
+| 배치기준 | **MSE(분산+바이어스)** | GDOP/CRLB/경험 | 바이어스까지 반영 |
+| NLOS | 실험기반 분포 | LUT/학습 혼합 | 상호보완 가능 |
+
+---
+
+## 4) 학습 방법 (Training)
+- **손실 함수:** MSE 성능지표 \(M(a)\) 최소화  
+- **옵티마이저:** **BCM**(좌표별 교대최소)  
+- **스케줄:** 반복 수렴
+- **데이터 분할:** —(설계 문제)
+
+---
+
+## 5) 실험 및 결과 (Experiments)
+- **데이터셋:** 실내 cluttered 환경 2D/3D
+- **평가 지표**
+
+| 지표 | 값 | 우리 목표 |
+|------|----|----------|
+| RMSE(2D) | **−47%**(vs trivial) | ↓ |
+| RMSE(3D) | **−76%**(vs trivial) | ↓ |
+
+- **Ablation**
+  - 바이어스 미고려(CRLB만) → 성능 열화
+- **Baseline 비교**
+  - 사소/균등 배치, GDOP/CRLB 기반 대비 **우수**
+
+---
+
+## 6) 우리 연구와의 관계
+- **유사점**: 앵커 배치 영향, NLOS 고려  
+- **차이점**: **TDoA 전용** 설계(우리 TWR/TDoA 혼합)  
+- **활용 가능 요소 체크**
+- [x] 평가/설계 툴체인
+- [x] 맵 기반 NLOS 가중
+- [ ] 손실 함수
+- [ ] 시각화
+- [x] Related Work 인용
+- **벤치마킹 가치**  
+  - Related Work: ⭐⭐⭐⭐  
+  - Baseline: ⭐⭐⭐⭐  
+  - 구현 참고: ⭐⭐⭐⭐⭐
+
+---
+
+## 7) 논문 작성 활용 메모
+- **Related Work 문장 초안:**  
+> 바이어스와 분산을 동시에 고려하는 **MSE 기반 TDoA 앵커 배치**가 cluttered 환경에서 RMSE를 크게 감소시켰다.
+- **Methodology 참고:** FIM+Bias 그래디언트
+- **Experiments 비교 계획:** GDOP/CRLB vs MSE
+- **Figure/Table:** 2D/3D 배치 히트맵, RMSE 맵
+
+---
+
+## 8) 참고 자료
+- **코드 저장소:** —  
+- **데이터셋:** —  
+- **Supplementary:** —  
+- **관련 논문:** GDOP/CRLB/PEB 기반 배치
+
+---
+
+## 9) 구현 체크리스트
+- **재현 가능성**
+- [x] 레이 트레이싱/맵 파이프라인
+- [x] FIM/Bias 계산기
+- [x] BCM 최적화
+- [ ] 20D 호환 체크
+- **논문 작성 활용**
+- [ ] Related Work
+- [ ] Figure/Table
+- [ ] BibTeX
+- **우선순위:** 🟢  
+- **담당자:** —  
+- **완료일:** YYYY-MM-DD

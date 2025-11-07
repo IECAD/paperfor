@@ -1,0 +1,92 @@
+# 논문 #79: Dynamic Anchor Selection and Real-Time Pose Prediction for Ultra-wideband Tagless Gate (arXiv, 2024)
+
+## 1) 기본 정보
+- **제목:** Dynamic Anchor Selection and Real-Time Pose Prediction for Ultra-wideband Tagless Gate
+- **저자:** Junyoung Choi, Sagnik Bhattacharya, Joohyun Lee (Samsung)
+- **저널/학회:** arXiv preprint
+- **출판연도:** 2024-02-22 (v1)
+- **DOI/링크:** — (arXiv)
+- **인용 횟수:** —
+
+**3줄 요약**
+1. **UTG(무태그 게이트)**를 위해 **DL-TDoA + DS-TWR** 전 과정에서 **LOS/NLOS 분류**와 **앵커 동적선택** 제안.  
+2. **eCIR(효과적 CIR)**로 입력 축소해 안드로이드 **실시간** 동작—**LOS/NLOS Acc 0.984**, **DL-TDoA 정확도 62%↑**.  
+3. **IMU(중력+가속)**으로 **포즈(손/앞주머니/뒤주머니)** 실시간 판별—**포즈 Acc 0.961**.
+
+**핵심 기여(Contribution)**
+- [x] **스마트폰+Qorvo MDEK1001** 실장, **eCIR** 기반 **실시간 DL 분류**  
+- [x] **Graham scan** 이용 **앵커 서브셋** 선택 + **Outlier** 검출  
+- [x] **DS-TWR** 시 **포즈 예측**으로 조기/지연 개폐 방지
+
+---
+
+## 2) 입력 데이터 (Input)
+- **원본 입력:** **CIR 1016 샘플 + 진단값**(FP_INDEX, FP_AMPL, maxNoise), **IMU(중력+가속)**
+- **전처리 (pseudo)**
+  1. 진단값 기반 **eCIR 추출** → **CNN** LOS/NLOS  
+  2. **NLOS 확률**로 앵커 선택(Convex hull/Graham)  
+  3. **IMU 시계열** → **LSTM** 포즈 분류
+
+**우리 20D 입력과의 매핑**
+
+| 우리 특징 | 논문 특징 | 변환 |
+|---|---|---|
+| CIR/진단 | eCIR + CNN | 우리 NLOS 모듈 대체/보강 |
+| 앵커선택 | NLOS 확률·기하 | **GDOP/R/Q**와 합성 |
+| 멀티센서 | IMU 포즈 | 도어·로봇 등 HRI 응용
+
+- **호환성 평가:** [x] 직접 사용 가능
+
+---
+
+## 3) 모델 아키텍처 (Architecture)
+[CIR,진단] → [**eCIR 업데이트**] → [**CNN(LOS/NLOS)**] → [**앵커 선택(Graham)**] → [DL-TDoA 위치]  
+[IMU] → [**LSTM(포즈)**] → [DS-TWR 정책]
+
+**특수 모듈:** eCIR(지연↓), Outlier 검출, 실단말 서빙
+
+---
+
+## 4) 학습 방법 (Training)
+- **데이터:** 자체 수집 + 공개 LOS/NLOS CIR 데이터(총 5만 샘플대), 포즈 26,400 샘플  
+- **모델:** CNN(분류), LSTM(포즈)
+
+---
+
+## 5) 실험 및 결과 (Experiments)
+| 항목 | 결과 |
+|---|---:|
+| **LOS/NLOS 분류** | **0.984** |
+| **DL-TDoA 향상** | **+62%**(NLOS) |
+| **포즈 분류** | **0.961** |
+
+---
+
+## 6) 우리 연구와의 관계
+- **유사점:** NLOS 분류→앵커 선택, 실시간 운영  
+- **차이점:** **포즈 인지**로 서비스 정책까지 제어  
+- **활용 가능 요소 체크**
+  - [x] eCIR 기반 경량 NLOS 모듈
+  - [x] 앵커 서브셋/Outlier 룰
+  - [x] 모바일 서빙 최적화
+
+**벤치마킹 가치:** Related ⭐⭐⭐⭐ / 구현 ⭐⭐⭐⭐
+
+---
+
+## 7) 논문 작성 활용 메모
+> “**eCIR + 앵커 동적선택 + 포즈 인지**로 현업 시스템에서 **실시간** 강건화—NLOS 구간에서도 성능↑.”
+
+---
+
+## 8) 참고 자료
+- **장치:** Samsung Galaxy Note20 Ultra, **Qorvo MDEK1001**  
+- **CIR 진단:** **FP_INDEX, FP_AMPL, maxNoise**
+
+---
+
+## 9) 구현 체크리스트
+- [ ] eCIR 업데이트기  
+- [ ] NLOS 확률→앵커 선택 규칙  
+- [ ] IMU 포즈 분류기(실시간)  
+- **우선순위:** 🟢 / **담당자:** — / **완료일:** YYYY-MM-DD

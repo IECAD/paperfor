@@ -1,0 +1,90 @@
+# 논문 #78: Deep learning-based ranging error mitigation method for UWB localization system in greenhouse (Comp. & Elec. in Agriculture, 2023)
+
+## 1) 기본 정보
+- **제목:** Deep learning-based ranging error mitigation method for UWB localization system in greenhouse
+- **저자:** Ziang Niu, Huizhen Yang, Lei Zhou, Mohamed Farag Taha, Yong He, Zhengjun Qiu
+- **저널/학회:** Computers and Electronics in Agriculture 205:107573
+- **출판연도:** 2023 (online 2022-12-23)
+- **DOI/링크:** 10.1016/j.compag.2022.107573
+- **인용 횟수:** —
+
+**3줄 요약**
+1. **CIR→오차(Δd) 회귀**로 **범위 보정** 후 **LS 위치계산**—온실(NLOS 다발)에서도 결과 안정.  
+2. **ECA-ResNet(1D)**: **Residual + Efficient Channel Attention**로 경량·성능 균형.  
+3. 실험 결과 **MAE 0.1004 m / RMSE 0.1714 m / R² 0.7548**(그린하우스 다구획) 달성.
+
+**핵심 기여(Contribution)**
+- [x] **CIR 직접 회귀** 기반 범위 오차 보정  
+- [x] **1D ECA-ResNet** 구조 제안  
+- [x] **온실 실계측**으로 강건성 검증
+
+---
+
+## 2) 입력 데이터 (Input)
+- **원본 입력:** **CIR(길이 1016, ~1 ns 샘플)**, DS-TWR 거리, 앵커 4(코너, 1.5 m)
+- **전처리 (pseudo)**
+  1. CIR 정규화 → **ECA-ResNet** 회귀(**Δd**)  
+  2. \(d^\* = \hat{d} - \Delta d\) 보정  
+  3. **LS**로 \((x,y)\) 산출
+
+**우리 20D 입력과의 매핑**
+
+| 우리 특징 | 논문 특징 | 변환 |
+|---|---|---|
+| CIR 채널 | 1D CNN+ECA | 동일 전처리 가능 |
+| 품질/가중 | — | Δd 불확실도→R/Q 가중 후보 |
+| 파이프라인 | 범위→좌표 | 우리 필터(EKF/UKF)와 결합
+
+- **호환성 평가:** [x] 직접 사용 가능
+
+---
+
+## 3) 모델 아키텍처 (Architecture)
+[CIR] → [**CNN 블록**] → [**Residual×3 + ECA**] → [GAP+FC] → [\(\widehat{\Delta d}\)] → [**LS**]
+
+**특수 모듈:** ECA(채널 어텐션), 큰 커널 초단 추출, **LAE(L1) 손실**, Adam, step LR
+
+---
+
+## 4) 학습 방법 (Training)
+- **손실:** **L1**(Δd)  
+- **스케줄:** 초기 lr \(5\times10^{-3}\), 30 epoch마다 /10, max 150, bs=8, PyTorch
+
+---
+
+## 5) 실험 및 결과 (Experiments)
+| 지표 | 값 |
+|---|---:|
+| **MAE** | **0.1004 m** |
+| **RMSE** | **0.1714 m** |
+| **R²** | **0.7548** |
+
+---
+
+## 6) 우리 연구와의 관계
+- **유사점:** CIR 기반 전처리/보정 → 좌표  
+- **차이점:** **온실 특화** 실증  
+- **활용 가능 요소 체크**
+  - [x] 1D ECA-ResNet 블록
+  - [x] Δd 회귀 후 LS
+  - [x] 실증 시나리오 인용
+
+**벤치마킹 가치:** Related ⭐⭐⭐⭐ / 구현 ⭐⭐⭐⭐
+
+---
+
+## 7) 논문 작성 활용 메모
+> “**CIR→Δd 회귀**로 NLOS가 큰 환경에서도 **오차 완화** 후 **LS 위치** 유지.”
+
+---
+
+## 8) 참고 자료
+- **장비:** DWM1000(Ch.2, fc≈3.9936 GHz, BW 499.2 MHz, PRF 64 MHz)
+
+---
+
+## 9) 구현 체크리스트
+- [ ] 1D ECA-ResNet 구현  
+- [ ] Δd→R/Q 가중 연동  
+- [ ] LS vs EKF/UKF 비교  
+- **우선순위:** 🟢 / **담당자:** — / **완료일:** YYYY-MM-DD

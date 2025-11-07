@@ -1,0 +1,83 @@
+# 논문 #29: *Indoor scenario-based UWB anchor placement optimization method for indoor localization* (Expert Systems With Applications, 2022)
+
+## 1) 기본 정보
+- **제목:** Indoor scenario-based UWB anchor placement optimization method for indoor localization
+- **저자/소속:** Hao Pan et al. (Xidian Univ.)
+- **저널/학회/연도:** Expert Systems With Applications, 2022 (Vol.205:117723)
+- **링크/DOI:** —
+- **키워드:** **앵커 배치 최적화**, 실내 시나리오 모델링, **CRLB**, **GPR**, **Differential Evolution**
+
+**3줄 요약**
+1) **도면 기반 실내 시나리오 모델링**(벽/코너 검출→**영역 분할·그래프 재구성**)로 **탐색공간 축소**.  
+2) **TTW(Through-the-Wall)+GPR** 결합 **확률·결정론 하이브리드 거리모델**로 NLOS 예측.  
+3) **Region-CRLB+DE**로 영역 병렬 탐색 및 **LOS 커버리지 최대화**, **데시미터급 정확도** 달성.
+
+**핵심 기여(Contribution)**
+- [x] **벽/코너 검출 + 영역 재구성**으로 배치 탐색공간을 물리 제약에 맞게 정제  
+- [x] **TTW+GPR**로 벽 관통에 따른 **속도저하·지연증가** 보정  
+- [x] **Region-CRLB** + **Region Combination**으로 앵커 수 부족 시에도 **3LOS 확보 최대화**
+
+---
+
+## 2) 입력 데이터 (Input)
+- **입력:** 평면도(SFP) → 벽/코너/영역, 후보 앵커 위치, 테스트 포인트  
+- **거리모델:** \( e_{\text{NLOS}} \approx w(\sqrt{\varepsilon_w}-1) + \sigma_w\beta_t \) (TTW) + **GPR** 보정
+
+**우리 20D 입력과의 매핑**
+
+| 우리 20D 특징 | 논문 특징 | 변환/활용 |
+|---|---|---|
+| 맵/가시성 | 실내 시나리오 모델(벽/영역) | **레이캐스팅**·금지구역·가시성 행렬 |
+| 품질가중 | CRLB/FIM | **R/Q 스케일러**·배치 점수화 |
+| 배치 최적화 | Region-CRLB+DE | **SWPDOP/CRLB** 하이브리드로 확대 |
+
+- **호환성 평가:** ☑ **직접 사용 가능**
+
+---
+
+## 3) 모델 아키텍처 (Architecture)
+- **파이프라인:** [SFP→벽/코너] → **영역그래프** → 후보셋 → **TTW+GPR 거리오차 예측** → **Region-CRLB+DE 최적화**  
+- **추정/해법:** WLS/QP 기반 위치, 목적함수는 **FIM/CRLB** + 예측오차
+
+**우리 모델과 비교**
+
+| 구성 요소 | 논문 | 우리 | 시너지 |
+|---|---|---|---|
+| 거리오차 모델 | TTW+GPR | 통계/학습 혼합 | **하이브리드 모델** 통합 |
+| 배치 메트릭 | CRLB | SWPDOP/CRLB | **공통 점수**로 통합 |
+| 탐색 | DE(영역 병렬) | GA/PSO 혼용 | **멀티휴리스틱** 앙상블 |
+
+---
+
+## 4) 학습/설정
+- **GPR 학습:** 소량 실측으로 TTW 오차 보정  
+- **DE 파라미터:** 개체수/변이/교차율, Region 병렬 탐색
+
+---
+
+## 5) 실험 및 결과
+- **결과 요약:** **데시미터급** 위치 정확도, **앵커 과잉/부족** 양쪽 케이스에서 **기존 배치법 대비 개선**
+
+---
+
+## 6) 우리 연구와의 관계
+- **바로 적용:** [x] **시나리오 모델러**(벽·영역) + **Region-CRLB** 배치 툴, [x] **TTW+GPR** 거리오차 예측  
+- **벤치마킹 가치:** Related ⭐⭐⭐⭐ / 배치 기준 ⭐⭐⭐⭐⭐ / 구현 ⭐⭐⭐⭐⭐
+
+---
+
+## 7) 작성 메모
+> “평면도 기반 **시나리오 모델링**과 **Region-CRLB+DE** 최적화로 **LOS를 극대화**하고 **데시미터급** 정확도를 달성.”
+
+---
+
+## 8) 재현/참고 포인트
+- 벽 재질 상대유전율 \( \varepsilon_w \) 추정, **영역 결합** 규칙(3LOS 미달 영역 통합)
+
+---
+
+## 9) 구현 체크리스트
+- [ ] 도면→벽/코너/영역 변환  
+- [ ] TTW+GPR 거리오차 학습  
+- [ ] Region-CRLB+DE 배치기  
+- **우선순위:** 🟢

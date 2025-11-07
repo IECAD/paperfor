@@ -1,0 +1,94 @@
+# 논문 #74: The LOS/NLOS Classification Method Based on Deep Learning for the UWB Localization System in Coal Mines (Applied Sciences, 2022)
+
+## 1) 기본 정보
+- **제목:** The LOS/NLOS Classification Method Based on Deep Learning for the UWB Localization System in Coal Mines
+- **저자:** Yuxuan Zhao, Manyi Wang
+- **저널/학회:** Applied Sciences 12(13):6484
+- **출판연도:** 2022-06-26
+- **DOI/링크:** 10.3390/app12136484
+- **인용 횟수:** —
+  
+**3줄 요약**
+1. **GAN 증강**으로 NLOS 데이터 불균형 해소 → **CNN/MLP**로 **LOS/NLOS 분류**.  
+2. **DW1000 진단 레지스터** 기반 프레임 전송 특성(진단 데이터)으로 **CIR 없이**도 분류 수행.  
+3. **정확도 91.19%**(LOS/NLOS) 달성, **TCPA(삼변 중심) 위치**가 **+3.11%** 개선.
+
+**핵심 기여(Contribution)**
+- [x] **GAN 기반 데이터 증강**
+- [x] **DW1000 진단 피처 활용** 분류기 설계
+- [x] 분류→**선형 모델+KF** 정오차 보정→**TCPA**로 검증
+
+---
+
+## 2) 입력 데이터 (Input)
+- **원본 입력 형태**
+  - 데이터 타입: DW1000 **diagnostic/frame-transfer** 레지스터 값 + TWR 거리
+  - 차원: 피처 벡터(레지스터 값들), 이진 라벨(LOS/NLOS)
+- **전처리 (pseudo)**
+  1. **GAN(WGAN-GP)**으로 **NLOS 증강**  
+  2. **MLP/CNN**으로 LOS/NLOS 분류  
+  3. 분류 결과 반영해 **선형오차모델+KF**로 거리 보정  
+  4. **TCPA**로 위치 산출, **지도 제약**으로 후보정
+
+**우리 20D 입력과의 매핑**
+
+| 우리 특징 | 논문 특징 | 변환 방법 |
+|---|---|---|
+| 품질 채널(R/Q) | LOS/NLOS 확률 | 게이팅·가중치로 매핑 |
+| Range | 선형+KF 보정 | 동일 파이프라인 |
+| CIR 통계 | (미사용) 진단값 | 대체/보조 피처로 추가
+
+- **호환성 평가:** [x] 직접 사용 가능
+
+---
+
+## 3) 모델 아키텍처 (Architecture)
+[DW1000 진단] → [**GAN 증강**] → [**CNN/MLP 분류**] → [**선형모델+KF**] → [**TCPA**]
+
+**특수 모듈:** 지도 경계 제약(결과 보정)
+
+---
+
+## 4) 학습 방법 (Training)
+- **손실:** CE(분류), GAN 손실(WGAN-GP)
+- **전략:** 증강→분류 사전학습, 실험/현장 데이터 혼합
+
+---
+
+## 5) 실험 및 결과 (Experiments)
+- **지표**
+
+| 지표 | 값 | 비고 |
+|---|---:|---|
+| LOS/NLOS 분류 정확도 | **91.19%** | 정적·동적 실험 |
+| 위치 개선 | **+3.11%** | TCPA with classifier |
+
+---
+
+## 6) 우리 연구와의 관계
+- **유사점:** 분류 확률→가중/게이팅, KF/선형 보정  
+- **차이점:** **CIR 대신 진단값** 중심  
+- **활용 가능 요소 체크**
+  - [x] 진단 피처 취득/매핑
+  - [x] GAN 증강 루틴
+  - [x] Related Work 인용
+
+**벤치마킹 가치:** Related ⭐⭐⭐ / 구현 ⭐⭐⭐
+
+---
+
+## 7) 논문 작성 활용 메모
+> *“DW1000 진단 피처 + GAN 증강 + 분류→KF→TCPA”* 체인은 CIR 의존도를 낮추는 대안 프레임으로 소개 가능.
+
+---
+
+## 8) 참고 자료
+- **DW1000 레지스터**, **GAN 구조/하이퍼파라미터**(WGAN-GP)
+
+---
+
+## 9) 구현 체크리스트
+- [ ] 진단 피처 수집 파이프라인  
+- [ ] WGAN-GP 증강기  
+- [ ] 분류–KF–TCPA 연결 테스트  
+- **우선순위:** 🟡 / **담당자:** — / **완료일:** YYYY-MM-DD

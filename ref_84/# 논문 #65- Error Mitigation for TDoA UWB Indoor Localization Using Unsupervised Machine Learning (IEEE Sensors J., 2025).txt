@@ -1,0 +1,87 @@
+# 논문 #65: Error Mitigation for TDoA UWB Indoor Localization Using Unsupervised Machine Learning (IEEE Sensors J., 2025)
+
+## 1) 기본 정보
+- **제목:** Error Mitigation for TDoA UWB Indoor Localization Using Unsupervised Machine Learning
+- **저자:** Phuong Bich Duong, Ben Van Herbruggen, Arne Bröring, Adnan Shahid, Eli De Poorter
+- **저널/학회:** IEEE Sensors Journal 25(1)
+- **출판연도:** 2025 (DOI: 10.1109/JSEN.2024.3496086)
+- **인용 횟수:** —  
+
+**3줄 요약**
+1. **DEC(Deep Embedded Clustering)** 기반 **비지도** 앵커/측정 선택으로 TDoA UWB 위치오차를 완화.  
+2. **AE→클러스터링→클러스터 품질 평가(1st-path vs peak-path 간격의 평균/표준편차)** 후 **좋은 클러스터만** 위치계산에 사용.  
+3. **MAE 23.1%↓(전체), 26.6%↓(다중경로 밀집), 95퍼센타일 49.3%↓**.
+
+**핵심 기여(Contribution)**
+- [x] TDoA용 **비지도 ML** 기반 **오류 완화 프레임워크**(라벨링 불필요)  
+- [x] **CIR 원시입력**에서 **고품질 클러스터 선별→앵커 선택**  
+- [x] 기존 DW 지표/경험적 품질평가 대비 **견고성↑**
+
+---
+
+## 2) 입력 데이터 (Input)
+- **원본 입력:** UWB **CIR**, first/peak path index, RSS/수신전력, 타임스탬프(IIoT-lab; 23 anchors; ch5, 850 kbps, PRF 64 MHz)  
+- **전처리 (pseudo)**  
+  1) **Conv-AE**로 잠재표현 생성 → 2) **DEC**로 k개 클러스터링 → 3) **클러스터 품질 점수(μ_d, σ_d)** → 4) **상위 품질만** 위치추정에 투입
+
+- **우리 20D 입력과의 매핑**
+
+| 우리 특징 | 논문의 특징 | 변환 방법 |
+|---|---|---|
+| CIR 파형/통계 | AE+DEC 잠재표현 | 우리 전처리 뒤 **게이팅/선별 모듈**로 결합 |
+| 품질/가중 | 클러스터 품질 점수 | **R/Q 가중** 또는 **측정 배제** |
+| Solver | TDoA 하이퍼볼릭 | 기존 솔버에 **선별된 측정치만** 투입 |
+
+- **호환성 평가:** [x] 직접 사용 가능
+
+---
+
+## 3) 모델 아키텍처 (Architecture)
+[CIR] → [**AE**] → [**DEC(클러스터링)**] → [**클러스터 품질평가**] → [**선별 측정**] → [TDoA 위치계산]
+
+**특수 모듈:** Student-t 기반 soft assignment, KL divergence 타깃분포 학습, k-means/GMM 초기화 비교
+
+---
+
+## 4) 학습 방법 (Training)
+- **손실:** AE 재구성 MSE + **KL(타깃분포‖할당분포)**  
+- **스케줄:** AE 사전학습 → DEC joint training
+
+---
+
+## 5) 실험 및 결과 (Experiments)
+- **환경:** Ghent Univ. IIoT-lab(100/150 m²), 이동 로봇 + MOCAP GT  
+- **지표:** **MAE 23.1%↓**, **다중경로 구역 26.6%↓**, **95%타일 49.3%↓**
+
+---
+
+## 6) 우리 연구와의 관계
+- **유사점:** CIR 기반 품질/선별 → TDoA 솔버  
+- **차이점:** **완전 비지도** + **클러스터 품질 점수**  
+- **활용 가능 요소 체크**
+  - [x] 입력 전처리(DEC 모듈)
+  - [x] 아키텍처 일부(품질게이팅)
+  - [ ] 손실 함수
+  - [x] 평가 방법론(상위/하위 품질 비교)
+
+**벤치마킹 가치:** Related ⭐⭐⭐⭐⭐ / 구현 ⭐⭐⭐⭐
+
+---
+
+## 7) 논문 작성 활용 메모
+- **초안:** “**비지도 DEC**로 **라벨 없이** CIR를 **품질 클러스터**로 분할, **좋은 클러스터만 사용**해 TDoA 오차를 크게 저감.”
+
+---
+
+## 8) 참고 자료
+- **데이터/장비:** Wi-Pos anchors(23), IIoT-lab  
+- **대비방법:** DW metric/채널 품질 기반 선택 등
+
+---
+
+## 9) 구현 체크리스트
+- [ ] Conv-AE+DEC 구현(k 선택)  
+- [ ] **μ(1st–peak), σ** 기반 클러스터 품질지표  
+- [ ] 선별 측정만 투입하는 TDoA 파이프라인  
+- [ ] 20D R/Q 연동·A/B 테스트  
+- **우선순위:** 🟢 / **담당자:** — / **완료일:** YYYY-MM-DD

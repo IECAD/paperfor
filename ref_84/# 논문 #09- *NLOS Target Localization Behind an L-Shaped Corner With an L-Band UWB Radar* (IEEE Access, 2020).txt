@@ -1,0 +1,103 @@
+# 논문 #09: *NLOS Target Localization Behind an L-Shaped Corner With an L-Band UWB Radar* (IEEE Access, 2020)
+
+## 1) 기본 정보
+- **제목:** NLOS Target Localization Behind an L-Shaped Corner With an L-Band UWB Radar  
+- **저자/소속:** Xiaqing Yang, Shihao Fan, Shisheng Guo, Songlin Li, Guolong Cui, Wei Zhang (UESTC)  [oai_citation:0‡09. NLOS_Target_Localization_Behind_an_L-Shaped_Corner_With_an_L-Band_UWB_Radar.pdf](sediment://file_00000000eea8622f99b6957c67f0d391)  
+- **저널/연도/DOI:** *IEEE Access*, **2020-02-10**, **10.1109/ACCESS.2020.2973046**  [oai_citation:1‡09. NLOS_Target_Localization_Behind_an_L-Shaped_Corner_With_an_L-Band_UWB_Radar.pdf](sediment://file_00000000eea8622f99b6957c67f0d391)  
+- **키워드:** L-band UWB **레이더**, **NLOS 멀티패스(회절·반사)**, **TOA(TOAs) 연합**, **모델 기반 로컬라이제이션**  [oai_citation:2‡09. NLOS_Target_Localization_Behind_an_L-Shaped_Corner_With_an_L-Band_UWB_Radar.pdf](sediment://file_00000000eea8622f99b6957c67f0d391)
+
+**3줄 요약**  
+1) L자 코너 환경의 **EM 전파 모델**(회절·1/2/3회 반사 경로)을 정식화하고 **단일/왕복 경로** 길이식을 유도.  [oai_citation:3‡09. NLOS_Target_Localization_Behind_an_L-Shaped_Corner_With_an_L-Band_UWB_Radar.pdf](sediment://file_00000000eea8622f99b6957c67f0d391)  [oai_citation:4‡09. NLOS_Target_Localization_Behind_an_L-Shaped_Corner_With_an_L-Band_UWB_Radar.pdf](sediment://file_00000000eea8622f99b6957c67f0d391)  
+2) 측정 **TOA 피크**들을 **경로 타입(원·타원 궤도)**에 매칭하는 **TOA 연합(association)** 기반 **타깃 위치 추정** 알고리즘 제안.  [oai_citation:5‡09. NLOS_Target_Localization_Behind_an_L-Shaped_Corner_With_an_L-Band_UWB_Radar.pdf](sediment://file_00000000eea8622f99b6957c67f0d391)  [oai_citation:6‡09. NLOS_Target_Localization_Behind_an_L-Shaped_Corner_With_an_L-Band_UWB_Radar.pdf](sediment://file_00000000eea8622f99b6957c67f0d391)  
+3) 시뮬레이션·실험으로 **잡음·일부 TOA 누락 상황**에서도 강건함 입증(예: **SNR≥10 dB → 오차 15 cm 이하** 유지).  [oai_citation:7‡09. NLOS_Target_Localization_Behind_an_L-Shaped_Corner_With_an_L-Band_UWB_Radar.pdf](sediment://file_00000000eea8622f99b6957c67f0d391)
+
+**핵심 기여(Contribution)**  
+- [x] **L-band UWB 레이더용 코너 환경 EM 모델**(회절/다중 반사 경로 체계화)  [oai_citation:8‡09. NLOS_Target_Localization_Behind_an_L-Shaped_Corner_With_an_L-Band_UWB_Radar.pdf](sediment://file_00000000eea8622f99b6957c67f0d391)  [oai_citation:9‡09. NLOS_Target_Localization_Behind_an_L-Shaped_Corner_With_an_L-Band_UWB_Radar.pdf](sediment://file_00000000eea8622f99b6957c67f0d391)  
+- [x] **TOA 연합 기반 위치 추정**: 경로 타입을 추정해 타깃 좌표를 해석적으로 산출(원/타원 교점)  [oai_citation:10‡09. NLOS_Target_Localization_Behind_an_L-Shaped_Corner_With_an_L-Band_UWB_Radar.pdf](sediment://file_00000000eea8622f99b6957c67f0d391)  
+- [x] **실험 검증**: 코너 뒤 **인체 미소동작**, **직선 이동** 시나리오에서 동작 확인  [oai_citation:11‡09. NLOS_Target_Localization_Behind_an_L-Shaped_Corner_With_an_L-Band_UWB_Radar.pdf](sediment://file_00000000eea8622f99b6957c67f0d391)  [oai_citation:12‡09. NLOS_Target_Localization_Behind_an_L-Shaped_Corner_With_an_L-Band_UWB_Radar.pdf](sediment://file_00000000eea8622f99b6957c67f0d391)
+
+---
+
+## 2) 입력 데이터 (Input)
+- **센서/측정:** **L-band SISO UWB 레이더**의 **TOA 에코 피크들**(직접경로 없음). 경로 유형은 **회절/반사** 조합.  [oai_citation:13‡09. NLOS_Target_Localization_Behind_an_L-Shaped_Corner_With_an_L-Band_UWB_Radar.pdf](sediment://file_00000000eea8622f99b6957c67f0d391)  [oai_citation:14‡09. NLOS_Target_Localization_Behind_an_L-Shaped_Corner_With_an_L-Band_UWB_Radar.pdf](sediment://file_00000000eea8622f99b6957c67f0d391)  
+- **전처리(요약):** (i) **피크 검출** → (ii) **경로 모델** 기반 **TOA–경로 타입 매칭**(association) → (iii) **원/타원 궤도** 계산 → (iv) **교점**으로 타깃 좌표 산출.  [oai_citation:15‡09. NLOS_Target_Localization_Behind_an_L-Shaped_Corner_With_an_L-Band_UWB_Radar.pdf](sediment://file_00000000eea8622f99b6957c67f0d391)  [oai_citation:16‡09. NLOS_Target_Localization_Behind_an_L-Shaped_Corner_With_an_L-Band_UWB_Radar.pdf](sediment://file_00000000eea8622f99b6957c67f0d391)
+
+**우리 20D 입력과의 매핑**
+
+| 우리 20D 특징 | 논문 특징 | 변환/활용 |
+|---|---|---|
+| DIST/TOF | 레이더 TOA 피크 | 피크→TOA로 정규화 가능(개념 유사) |
+| CIR/SNR | 간접적(피크 신호품질) | **피크 신뢰도 가중**으로 응용 가능 |
+| 맵(벽체/코너) | 필수(벽 좌표·면 식별) | 평면도/모델로 대체 가능 |
+
+- **호환성 평가:** 🟠 **낮음~중간** — **UWB 레인지 기반 IPS**와 문제정의가 다름(단일 레이더→**비협력 타깃** 탐지). **방법론(멀티패스 모델·연합·게이팅)**은 아이디어 차용 가치 높음.
+
+---
+
+## 3) 모델 아키텍처 (Algorithm)
+- **전체 흐름:** **[코너/벽 파라미터] + [UWB 레이더 에코] → 피크 TOA 추출 → (모델) 단/왕복 경로 길이 후보 → **TOA–경로 타입 연합** → **원/타원 locus** 생성 → **교점 해**(타깃 좌표)**.**  [oai_citation:17‡09. NLOS_Target_Localization_Behind_an_L-Shaped_Corner_With_an_L-Band_UWB_Radar.pdf](sediment://file_00000000eea8622f99b6957c67f0d391)  [oai_citation:18‡09. NLOS_Target_Localization_Behind_an_L-Shaped_Corner_With_an_L-Band_UWB_Radar.pdf](sediment://file_00000000eea8622f99b6957c67f0d391)  
+- **핵심 수식:** 왕복 경로 **10종**에 대한 길이식/등가 안테나 좌표식(대칭점) 제시; **원/타원** locus 정리(정리 1–2).  [oai_citation:19‡09. NLOS_Target_Localization_Behind_an_L-Shaped_Corner_With_an_L-Band_UWB_Radar.pdf](sediment://file_00000000eea8622f99b6957c67f0d391)  [oai_citation:20‡09. NLOS_Target_Localization_Behind_an_L-Shaped_Corner_With_an_L-Band_UWB_Radar.pdf](sediment://file_00000000eea8622f99b6957c67f0d391)
+
+**우리 모델과 비교**
+
+| 구성 요소 | 논문(09) | 우리(20D IPS) | 차이 |
+|---|---|---|---|
+| 센서 구성 | **SISO 레이더** 단일 스테이션 | **멀티 앵커–태그** | 문제정의 상이 |
+| NLOS 처리 | **물리 모델 기반**(회절/반사) | **통계/학습·맵 보조** | 보완적 관점 |
+| 추정기 | **기하 해법**(원/타원 교점) | EKF/FG/DL + 가중 | 백엔드 유형 다름 |
+
+---
+
+## 4) 학습 방법 (Training)
+- **비학습형**: EM 모델+해석적 위치 계산(학습/딥러닝 없음). 일부 **TOA 누락** 상황도 연합으로 처리.  [oai_citation:21‡09. NLOS_Target_Localization_Behind_an_L-Shaped_Corner_With_an_L-Band_UWB_Radar.pdf](sediment://file_00000000eea8622f99b6957c67f0d391)
+
+---
+
+## 5) 실험 및 결과 (Experiments)
+- **시뮬레이션:** **SNR=8 dB**에서 **최대 35 cm**, 대부분 **20 cm 이하**; **SNR≥10 dB**에서 **15 cm 이하**로 안정.  [oai_citation:22‡09. NLOS_Target_Localization_Behind_an_L-Shaped_Corner_With_an_L-Band_UWB_Radar.pdf](sediment://file_00000000eea8622f99b6957c67f0d391)  
+- **실험 시나리오:** (Case-1) **미소동작(인체)**, (Case-2/3) **단일 타깃 직선 이동** — 동일 레이더/벽 구성, **stepped-frequency** 신호 파라미터 제시.  [oai_citation:23‡09. NLOS_Target_Localization_Behind_an_L-Shaped_Corner_With_an_L-Band_UWB_Radar.pdf](sediment://file_00000000eea8622f99b6957c67f0d391)  [oai_citation:24‡09. NLOS_Target_Localization_Behind_an_L-Shaped_Corner_With_an_L-Band_UWB_Radar.pdf](sediment://file_00000000eea8622f99b6957c67f0d391)  
+- **정량 메트릭:** 실험부는 궤적/레인지 프로파일 중심 제시(정량 RMSE 표는 제한적) — **방법 유효성** 시현.  [oai_citation:25‡09. NLOS_Target_Localization_Behind_an_L-Shaped_Corner_With_an_L-Band_UWB_Radar.pdf](sediment://file_00000000eea8622f99b6957c67f0d391)
+
+---
+
+## 6) 우리 연구와의 관계
+- **유사점**: (i) **NLOS 멀티패스**를 **모델/가정**으로 다루고, (ii) **맵/벽 파라미터**가 중요.  
+- **차이점**: **협력형 앵커–태그 IPS**가 아닌 **비협력 레이더** 문제.  
+- **바로 적용 포인트**  
+  - [x] **멀티패스 경로 사전(회절·반사)→ TOA 게이팅 룰**: 우리 측정 중 **의심 TOF**에 물리적 상·하한 제약 부여(허용 영역 제한).  [oai_citation:26‡09. NLOS_Target_Localization_Behind_an_L-Shaped_Corner_With_an_L-Band_UWB_Radar.pdf](sediment://file_00000000eea8622f99b6957c67f0d391)  
+  - [x] **원/타원 locus 개념 → 그래프/필터 가중**: 특정 경로 조합에서만 성립하는 **기하 제약**을 소프트 제약으로 추가.  [oai_citation:27‡09. NLOS_Target_Localization_Behind_an_L-Shaped_Corner_With_an_L-Band_UWB_Radar.pdf](sediment://file_00000000eea8622f99b6957c67f0d391)  
+  - [x] **TOA 연합 절차**를 **다중 앵커 거리/시간 피크 매칭**에도 응용(누락·가짜 피크 대응).
+
+**벤치마킹 가치**  
+- Related Work: ⭐⭐⭐ (비협력 레이더 문헌 축)  
+- Baseline: ⭐⭐ (직접 비교는 어려움)  
+- 구현 참고(물리/기하 제약 설계): ⭐⭐⭐⭐
+
+---
+
+## 7) 논문 작성 활용 메모
+- **Related Work 한 줄**  
+  > “L-band **UWB 레이더**로 코너 뒤 **NLOS 타깃**을 **회절·반사 모델**과 **TOA 연합**을 통해 복원, **SNR≥10 dB**에서 **≤15 cm** 수준으로 강건함을 보였다.”  [oai_citation:28‡09. NLOS_Target_Localization_Behind_an_L-Shaped_Corner_With_an_L-Band_UWB_Radar.pdf](sediment://file_00000000eea8622f99b6957c67f0d391)  
+- **Methodology 차용 포인트**  
+  1) **멀티패스 물리 제약을 이용한 게이팅**(우리 EKF/FG의 측정 가중과 결합)  
+  2) **TOA 연합**을 **다중 앵커 거리 피크 매칭** 문제로 일반화  
+- **Figure/Table 아이디어**  
+  - (Fig) **회절·1/2/3회 반사** 경로 스케치 + 허용 영역(원/타원)  
+  - (Tbl) **SNR 별 오차 상한**(sim) vs. **우리 NLOS 완화 전/후** 비교
+
+---
+
+## 8) 참고 포인트(본문 위치)
+- **메타/DOI/게재일:** 2020-02-10, 10.1109/ACCESS.2020.2973046  [oai_citation:29‡09. NLOS_Target_Localization_Behind_an_L-Shaped_Corner_With_an_L-Band_UWB_Radar.pdf](sediment://file_00000000eea8622f99b6957c67f0d391)  
+- **EM 모델 핵심(단/왕복·등가 안테나·경로식):** 식(1)–(4), Table 1–4 요지  [oai_citation:30‡09. NLOS_Target_Localization_Behind_an_L-Shaped_Corner_With_an_L-Band_UWB_Radar.pdf](sediment://file_00000000eea8622f99b6957c67f0d391)  [oai_citation:31‡09. NLOS_Target_Localization_Behind_an_L-Shaped_Corner_With_an_L-Band_UWB_Radar.pdf](sediment://file_00000000eea8622f99b6957c67f0d391)  
+- **연합/기하(원·타원) 정리:** 정리 1–2 및 해법(원–원 / 원–타원 / 타원–타원)  [oai_citation:32‡09. NLOS_Target_Localization_Behind_an_L-Shaped_Corner_With_an_L-Band_UWB_Radar.pdf](sediment://file_00000000eea8622f99b6957c67f0d391)  [oai_citation:33‡09. NLOS_Target_Localization_Behind_an_L-Shaped_Corner_With_an_L-Band_UWB_Radar.pdf](sediment://file_00000000eea8622f99b6957c67f0d391)  
+- **시뮬레이션 에러 vs. SNR:** Fig.11 설명(8 dB 최대 35 cm, ≥10 dB 15 cm 이하)  [oai_citation:34‡09. NLOS_Target_Localization_Behind_an_L-Shaped_Corner_With_an_L-Band_UWB_Radar.pdf](sediment://file_00000000eea8622f99b6957c67f0d391)  
+- **실험 시나리오 개요:** Fig.12–13 및 케이스 설명  [oai_citation:35‡09. NLOS_Target_Localization_Behind_an_L-Shaped_Corner_With_an_L-Band_UWB_Radar.pdf](sediment://file_00000000eea8622f99b6957c67f0d391)  [oai_citation:36‡09. NLOS_Target_Localization_Behind_an_L-Shaped_Corner_With_an_L-Band_UWB_Radar.pdf](sediment://file_00000000eea8622f99b6957c67f0d391)
+
+---
+
+## 9) 구현 체크리스트
+- [x] **멀티패스 제약 게이팅**(회절/반사 기반 허용영역)  
+- [x] **TOA 피크 연합 로직**(누락·가짜 피크 대응)  
+- [ ] **우리 IPS로의 일반화**(다앵커 거리·CIR 품질 가중과 결합)  
+- **우선순위:** 🟡 (아이디어 차용 중심)

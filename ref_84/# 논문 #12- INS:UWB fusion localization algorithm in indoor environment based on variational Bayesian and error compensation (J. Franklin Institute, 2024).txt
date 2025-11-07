@@ -1,0 +1,85 @@
+# 논문 #12: INS/UWB fusion localization algorithm in indoor environment based on variational Bayesian and error compensation (J. Franklin Institute, 2024)
+
+## 1) 기본 정보
+- **제목:** INS/UWB fusion localization algorithm in indoor environment based on variational Bayesian and error compensation
+- **저자:** Long Cheng, Ke Liu
+- **저널/학회:** Journal of the Franklin Institute 361:107204
+- **출판연도:** 2024-08-28(online)
+- **DOI/링크:** 10.1016/j.jfranklin.2024.107204
+- **인용 횟수:** —
+
+**3줄 요약**
+1. **VBGMM**으로 **UWB 거리**를 **LOS/NLOS 군집** 분리, **SURE-Shrink**로 **INS 노이즈** 전처리.  
+2. **MEF-GPDAF**(최대엔트로피 퍼지-일반화 확률 데이터 연관 필터)로 초기 융합 → **가상 관성 포인트** 기반 **오차 보상** → **UKF** 최종 정제.  
+3. 실제 실험에서 **평균 위치 정확도 61.12% 개선**.
+
+**핵심 기여(Contribution)**
+- [x] **VBGMM** NLOS 완화 + **SURE-Shrink** INS 전처리
+- [x] **MEF-GPDAF → 보상 → UKF** 3단 융합
+- [x] 실제 데이터 **>60% 개선** 보고
+
+---
+
+## 2) 입력 데이터 (Input)
+- **원본 입력:** UWB ToF(LOS/NLOS 혼재), INS(가속/자이로)
+- **전처리 (pseudo)**
+  1. **VBGMM**으로 거리 샘플 군집(LOS/NLOS)  
+  2. INS는 **SURE-Shrink** 임계로 노이즈 억제  
+  3. **MEF-GPDAF** 융합 → **가상 관성 포인트** 오차보상 → **UKF** 정제
+
+**우리 20D와의 매핑**
+
+| 우리 특징 | 논문 특징 | 변환 방법 |
+|---|---|---|
+| 품질/게이팅 | VBGMM 결과 | R/Q 가중·NLOS 배제 |
+| 멀티센서 | GPDAF/UKF | 우리 EKF/UKF 대체/보강 |
+| 보정 | 좌표 보상 | 잔차 기반 오프셋 보정 채널
+
+- **호환성 평가:** [x] 부분 변형으로 사용 가능
+
+---
+
+## 3) 모델 아키텍처 (Architecture)
+[UWB]→[**VBGMM**] + [INS]→[**SURE-Shrink**] → [**MEF-GPDAF**] → [**오차 보상**] → [**UKF**] → [좌표]
+
+---
+
+## 4) 학습 방법 (Training)
+- 없음(통계/필터/군집 기반)
+
+---
+
+## 5) 실험 및 결과 (Experiments)
+| 지표 | 값 |
+|---|---:|
+| 평균 정확도 개선 | **+61.12%** |
+
+---
+
+## 6) 우리 연구와의 관계
+- **유사점:** UWB/INS 융합, NLOS 완화  
+- **차이점:** **VBGMM+MEF-GPDAF+UKF**의 **3단 구조**  
+- **활용 가능 요소 체크**
+  - [x] VBGMM 기반 NLOS 필터링
+  - [x] GPDAF 융합 블록
+  - [x] 좌표 오프셋 보상기
+
+**벤치마킹 가치:** Related ⭐⭐⭐⭐ / 구현 ⭐⭐⭐
+
+---
+
+## 7) 논문 작성 활용 메모
+> “**VBGMM–GPDAF–UKF** 체인으로 **NLOS/INS 노이즈**를 동시에 제압—**~61%** 개선 보고.”
+
+---
+
+## 8) 참고 자료
+- **알고리즘:** VBGMM/MEF-GPDAF/UKF, **SURE-Shrink**
+
+---
+
+## 9) 구현 체크리스트
+- [ ] VBGMM 거리 클러스터러  
+- [ ] GPDAF 융합기 + UKF  
+- [ ] 잔차 기반 좌표 보상  
+- **우선순위:** 🟡 / **담당자:** — / **완료일:** YYYY-MM-DD

@@ -1,0 +1,96 @@
+# 논문 #58: FCN-Attention — UWB NLOS/LOS 분류 (Geo-spatial Information Science, 2024)
+
+## 1) 기본 정보
+- **제목:** FCN-Attention: A deep learning UWB NLOS/LOS classification algorithm using fully convolution neural network with self-attention mechanism
+- **저자:** Yu Pei, Ruizhi Chen, Deren Li, Xiongwu Xiao, Xingyu Zheng
+- **저널/학회:** Geo-spatial Information Science 27(4)
+- **출판연도:** 2024 (Online 2023)
+- **DOI/링크:** 10.1080/10095020.2023.2178334
+- **인용 횟수:** —
+
+**3줄 요약**
+1. **1D FCN**으로 **UWB CIR**의 지역특징 추출, **Self-Attention**으로 정보가 풍부한 부분 강조.  
+2. 공개/자체/혼합 데이터셋에서 **정확도 88.24% / 100% / 92.01%**.  
+3. 지도/거리 기반 대비 **사전 맵 없이도** 높은 일반화.
+
+**핵심 기여(Contribution)**
+- [x] **FCN+Self-Attention** 구조로 NLOS/LOS 분류 향상
+- [x] **원시 CIR** 직접 사용(수작업 특징 불필요)
+- [x] 다중 데이터셋 **일반화 성능** 검증
+
+---
+
+## 2) 입력 데이터 (Input)
+- **원본 입력:** UWB **CIR**(~1k 샘플/프레임 가정)
+- **전처리 (pseudo):** 정규화/패딩 → **FCN(Conv1D+BN+ReLU×3, MaxPool)** → **Self-Attention** → FC → Softmax
+
+**우리 20D 입력과의 매핑**
+
+| 우리 특징 | 논문 특징 | 변환 방법 |
+|---|---|---|
+| CIR/품질 | FCN-Attention 확률 | **R 게이팅/가중**으로 연동 |
+| Range | 분류 결과 반영 | NLOS 가중·WLS/EKF에 주입 |
+| 런타임 | 경량 FCN | 엣지 배치 가능
+
+- **호환성 평가**
+  - [x] 직접 사용 가능
+
+---
+
+## 3) 모델 아키텍처 (Architecture)
+[CIR] → [**FCN(Conv1D×3)**] → [**Self-Attention**] → [FC] → [Softmax p(LOS/NLOS)]
+
+**우리 모델과 비교**
+
+| 구성 요소 | 논문 | 우리 모델 | 차이점 |
+|---|---|---|---|
+| 특징화 | FCN 1D | CNN/TCN/통계 | 어텐션 모듈 보강 후보 |
+| 출력 | p(LOS/NLOS) | 품질/가중 | R-API 바로 결합 |
+
+---
+
+## 4) 학습 방법 (Training)
+- **손실:** CE / **옵티마이저:** Adam
+- **데이터 분할:** 공개·자체·혼합셋
+
+---
+
+## 5) 실험 및 결과 (Experiments)
+
+| 지표 | 값 |
+|---|---:|
+| Acc(공개) | **88.24%** |
+| Acc(자체) | **100%** |
+| Acc(혼합) | **92.01%** |
+
+- **Ablation:** 어텐션 off/단순 CNN 대비 ↓
+
+---
+
+## 6) 우리 연구와의 관계
+- **유사점:** CIR 기반 품질 추정  
+- **차이점:** 순수 분류 헤드  
+- **활용 가능 요소 체크**
+  - [x] 아키텍처 일부(FCN-Attention)
+  - [x] 평가 방법론(다중셋 일반화)
+  - [x] Related Work 인용
+
+**벤치마킹 가치** — Related ⭐⭐⭐⭐ / 구현 ⭐⭐⭐⭐⭐
+
+---
+
+## 7) 논문 작성 활용 메모
+- **초안:** **FCN-Attention**은 원시 **CIR**에서 지역특징을 추출하고 **자기주목**으로 정보성을 강화해 다양한 환경에서 높은 정확도를 보였다.
+
+---
+
+## 8) 참고 자료
+- **데이터셋:** 공개 CIR + 자체 수집
+
+---
+
+## 9) 구현 체크리스트
+- [ ] FCN-Attention 구현
+- [ ] 확률 보정(Platt/Isotonic)
+- [ ] R-API 연동/EKF 가중
+- **우선순위:** 🟢 / **담당자:** — / **완료일:** YYYY-MM-DD

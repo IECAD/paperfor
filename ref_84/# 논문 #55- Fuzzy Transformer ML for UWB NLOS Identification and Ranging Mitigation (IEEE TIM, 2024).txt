@@ -1,0 +1,83 @@
+# 논문 #55: Fuzzy Transformer ML for UWB NLOS Identification and Ranging Mitigation (IEEE TIM, 2024)
+
+## 1) 기본 정보
+- **제목:** Fuzzy Transformer Machine Learning for UWB NLOS Identification and Ranging Mitigation
+- **저자:** Hongchao Yang, Yunjia Wang, Chee Kiat Seow, Meng Sun, Sander Coene, Lu Huang, Wout Joseph, David Plets
+- **저널/학회:** IEEE Transactions on Instrumentation and Measurement
+- **출판연도:** 2024
+- **DOI/링크:** —
+- **인용 횟수:** —
+
+**3줄 요약**
+1. **BERT 기반**으로 CIR의 **시간·에너지** 특징을 함께 다루고, **퍼지 확률**을 결합한 **F-BERT**로 NLOS 식별.  
+2. 식별 결과를 바탕으로 **범위 오차 분류/보정용 BERT**를 추가하여 **거리/위치 정확도** 개선.  
+3. **식별 정확도**에서 **LS-SVM/CNN/CNN-LSTM 대비 12.5–14.9%p↑**, **NLOS 거리오차 36.2%↓**, **평균 위치정확도 37.9%↑**; **미학습 환경**에서도 일반화.
+
+**핵심 기여(Contribution)**
+- [x] **새 CIR 특징(FPE, ESP, FPN)** + **퍼지 정보** 결합
+- [x] **식별→보정** 2단 BERT 파이프라인
+- [x] 환경 일반화 및 큰 성능 향상
+
+---
+
+## 2) 입력 데이터 (Input)
+- **원본 입력:** UWB **CIR** + 파생 특징
+- **전처리:** 특징 추출(FPE/ESP/FPN 등) + 퍼지화 → **F-BERT**(식별) → **BERT**(범위 보정)
+
+**우리 20D 입력과의 매핑**
+
+| 우리 특징 | 논문 특징 | 변환 |
+|---|---|---|
+| CIR/통계 | 새 특징+퍼지 | 특징 엔지니어링 모듈 |
+| 품질/가중 | F-BERT 확률 | R/Q 매핑 및 게이팅 |
+| 거리 보정 | BERT 보정 | EKF/FG 전단 보정 삽입
+
+- **호환성 평가**: [x] 직접 사용(모듈화)
+
+---
+
+## 3) 모델 아키텍처 (Architecture)
+[CIR + 특징] → [**F-BERT(NLOS 식별)**] → [**BERT(오차분류·보정)**] → [보정 거리] → [위치]
+
+---
+
+## 4) 학습 방법 (Training)
+- **손실:** CE(식별) + 회귀/분류 혼합(보정)
+- **일반화:** 교차 환경 검증 보고
+
+---
+
+## 5) 실험 및 결과 (Experiments)
+| 항목 | 성과 |
+|---|---|
+| NLOS 식별 | **기존 대비 12.5–14.9%p↑** |
+| 거리 보정 | **NLOS 오차 36.2%↓** |
+| 위치 정확 | **평균 37.9%↑** |
+| 일반화 | **다른 환경에서도 양호** |
+
+---
+
+## 6) 우리 연구와의 관계
+- **유사점:** 품질 판정→범위 보정→필터 연계
+- **차이점:** **Transformer+BERT** 채택
+- **활용 가능 요소**
+  - [x] F-BERT 확률을 R 스케일에 직접 연계
+  - [x] 전단 보정 모듈로 손쉬운 삽입
+
+---
+
+## 7) 논문 작성 활용 메모
+> **퍼지-트랜스포머**로 환경 불확실성을 흡수하고, **보정 단계**까지 일원화해 실사용 정확도를 크게 높임.
+
+---
+
+## 8) 참고 자료
+- **비교군:** LS-SVM, CNN, CNN-LSTM 등
+
+---
+
+## 9) 구현 체크리스트
+- [ ] CIR 특징+퍼지 엔지니어링
+- [ ] F-BERT 학습
+- [ ] 보정 BERT + EKF/FG 연동
+- **우선순위:** 🟢
