@@ -1,0 +1,97 @@
+# 논문 #26: *An Adaptive Kalman Filter Loosely Coupled Indoor Fusion Positioning System Based on INS and UWB* (Measurement, 2025)
+
+## 1) 기본 정보
+- **제목:** An Adaptive Kalman Filter Loosely Coupled Indoor Fusion Positioning System Based on INS and UWB
+- **저자/소속:** —
+- **저널/학회/연도:** Measurement, 2025
+- **링크/DOI:** —
+- **키워드:** AEKF, UWB×INS, RNN-PDR, NLOS 보정, Firefly-PF
+
+**3줄 요약**
+1) **AEKF(Q/R 적응)** 로 UWB/INS 느슨결합 품질을 환경에 맞게 자동 조정.  
+2) **RNN-PDR(보폭/방향)** + **NLOS 보정** 출력으로 **PF 제어/관측 품질**을 동시 개선.  
+3) **Firefly 최적화 PF(FAPF)** 로 입자 빈곤·국소해 문제를 줄여 **≈0.4 m** 달성.
+
+**핵심 기여(Contribution)**
+- [x] 실시간 **Q/R 적응** 융합  
+- [x] **RNN-PDR** → PF 제어 보강  
+- [x] **FAPF** 로 전역 탐색/수렴 균형
+
+---
+
+## 2) 입력 데이터 (Input)
+- **원본 입력:** IMU(가속/각속, 50 Hz), UWB TWR(5 앵커, 50 Hz)
+- **전처리(요약):** ZUPT 개선, NLOS 보정(규칙/통계), RNN으로 보폭/방향 회귀
+
+**우리 20D 입력과의 매핑**
+
+| 우리 20D 특징 | 논문 특징 | 변환/활용 |
+|---|---|---|
+| IMU/오도메터 | RNN-PDR | 우리 PDR/INS에 **대체 또는 보강** |
+| Range | NLOS 보정 | 품질/맵 가중과 **하이브리드** |
+| 백엔드 | AEKF→FAPF | **Q/R 적응** 공통화 + **메타휴리스틱 PF** 옵션화 |
+
+- **호환성 평가:** ☑ **직접 사용 가능**
+
+---
+
+## 3) 모델 아키텍처 (Architecture)
+- **파이프라인:** **[INS/PDR]∥[UWB] → [AEKF] → [FAPF] → [Position]**
+- **핵심 모듈/수식:** 온라인 **Q/R 업데이트**, Firefly 상호유도 규칙
+
+**우리 모델과 비교**
+
+| 구성 요소 | 논문 | 우리 모델 | 차이/시너지 |
+|---|---|---|---|
+| 결합 | AEKF 느슨결합 | EKF/UKF/FG | **Q/R 적응** 표준화 |
+| PF | Firefly-PF | 기본/ARPF | **메타휴리스틱 주입** |
+| PDR | RNN 회귀 | 모델/센서 혼합 | 성능/일반화 ↑ |
+
+---
+
+## 4) 학습/설정 (Training)
+- **데이터/라벨:** 보폭/방향(지상진실)로 RNN 회귀  
+- **손실/옵티마이저/스케줄:** MSE, Adam 등  
+- **하이퍼파라미터:** 입자수, 발광계수, ZUPT 임계, NLOS 임계
+
+---
+
+## 5) 실험 및 결과 (Experiments)
+- **환경/셋업:** 실내 복도/코너, 5 앵커, 50 Hz
+- **대표 지표(복사):**
+
+| 지표 | 값 | 조건/비고 |
+|---|---:|---|
+| 최종 RMSE | **≈ 0.4 m** | 전체 주행 |
+| 게이트 검출 | 80–100% | 보행/계단/러닝 |
+
+- **Baseline 비교:** EKF/기본 PF 대비 오차·연속성 개선
+
+---
+
+## 6) 우리 연구와의 관계
+- **바로 적용 포인트**
+  - [x] **AEKF(Q/R 적응)** 공통 모듈화
+  - [x] **RNN-PDR** 제어항 → PF/UKF/FG
+  - [x] **FAPF 옵션**(ARPF/PSO와 비교)
+- **벤치마킹 가치:** Related ⭐⭐⭐⭐ / Baseline ⭐⭐⭐⭐ / 구현 ⭐⭐⭐⭐⭐
+
+---
+
+## 7) 논문 작성 활용 메모
+- **Related Work 한 줄:**  
+  > “INS×UWB 느슨결합에 **AEKF+RNN-PDR+Firefly-PF**를 결합해 실내에서 **≈0.4 m** 성능을 달성.”
+
+---
+
+## 8) 재현/참고 포인트
+- 입자수·발광/흡수 파라미터 스윕, **ZUPT/임계값** 환경별 튜닝
+
+---
+
+## 9) 구현 체크리스트
+- [ ] AEKF(Q/R 적응)
+- [ ] RNN-PDR
+- [ ] FAPF 커널
+- [ ] Ablation(RNN/FA on/off)
+- **우선순위:** 🟢

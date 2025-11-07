@@ -1,0 +1,91 @@
+# 논문 #75: Ultra-Wideband Ranging Error Mitigation with Novel CIR Feature Parameters and Two-Step NLOS Identification (Sensors, 2024)
+
+## 1) 기본 정보
+- **제목:** Ultra-Wideband Ranging Error Mitigation with Novel CIR Feature Parameters and Two-Step Non-Line-of-Sight Identification
+- **저자:** Hongchao Yang, Yunjia Wang*, Shenglei Xu, Jingxue Bi, Haonan Jia, Cheekiat Seow
+- **저널/학회:** Sensors 24:1703
+- **출판연도:** 2024-03-06
+- **DOI/링크:** 10.3390/s24051703
+- **인용 횟수:** —
+
+**3줄 요약**
+1. **새 CIR 파라미터** 제안: **TFPdelay**(진정 FP 도달 지연), **erise**(에너지 상승량); LDE 한계 보정.  
+2. **2-스텝 NLOS 식별**: **DT(결정트리) 프리필터 → FNN 정교 분류**, **퍼지 로직**과 **동적 임계 업데이트** 포함.  
+3. **NLOS 오차 유형 3가지**로 세분해 **원인별 보정** + **리콜 메커니즘** → **NLOS 식별 95.05%**, **정확도 54.46% 향상**.
+
+**핵심 기여(Contribution)**
+- [x] **TFPdelay/erise** 등 **새로운 CIR 특징**
+- [x] **DT+FNN** 2-단 식별 + 퍼지 로직/동적 임계
+- [x] **NLOS 3유형**/부분 **LOS 오차**까지 **완화**
+
+---
+
+## 2) 입력 데이터 (Input)
+- **원본 입력:** UWB **CIR** 시퀀스(1.0016 ns 샘플), LDE 기준치/NTM, FP/SP/ENS/SRS/SDS 구간
+- **전처리 (pseudo)**
+  1. ENS 구간 CDF 기반 **새 잡음 레벨** 산정 → **LN** 임계 생성  
+  2. **TFPdelay, erise** 등 특징 추출  
+  3. **DT**로 전형적 LOS/NLOS 분리 → 잔여를 **FNN**으로 정밀 판정  
+  4. **오류 유형(3종)**별 보정 + **리콜**로 고정밀 결과 보존
+
+**우리 20D 입력과의 매핑**
+
+| 우리 특징 | 논문 특징 | 변환 방법 |
+|---|---|---|
+| CIR 통계/파형 | TFPdelay, erise | 20D 채널에 신특징 추가 |
+| 품질/게이팅 | DT+FNN 확률, 리콜 | R/Q 가중·배제 규칙 |
+| 범위 보정 | 유형별 보정 | 후단 보정 모듈 삽입
+
+- **호환성 평가:** [x] 직접 사용 가능
+
+---
+
+## 3) 모델 아키텍처 (Architecture)
+[CIR] → [**특징 추출(TFPdelay/erise …)**] → [**DT → FNN**] → [**NLOS 유형별 보정 + 리콜**] → [위치]
+
+---
+
+## 4) 학습 방법 (Training)
+- **손실:** CE(FNN), DT 임계는 데이터 기반 동적 업데이트
+- **전략:** 다환경(인체/벽/유리, **2개 사이트**) 정적·동적 혼합
+
+---
+
+## 5) 실험 및 결과 (Experiments)
+| 지표 | 값 | 비고 |
+|---|---:|---|
+| NLOS 식별 정확도 | **95.05%** | LOS/NLOS 리콜 95.72%/94.15% |
+| LOS 오차 감소 | **50.4%** | |
+| NLOS 오차 평균 개선 | **61.8%**(최대 **76.84%**) | |
+| 전체(LOS+NLOS) 오차 감소 | **25.19% / 69.85%** | 각 채널별 |
+| **위치 정확도 향상** | **+54.46%** | 동적 위치 |
+
+---
+
+## 6) 우리 연구와의 관계
+- **유사점:** CIR 기반 판정·보정, 품질 게이팅  
+- **차이점:** **새 특징+2단 식별+리콜**로 안정성↑  
+- **활용 가능 요소 체크**
+  - [x] TFPdelay/erise 채널 추가
+  - [x] DT→FNN 파이프라인
+  - [x] 유형별 보정/리콜 설계
+
+**벤치마킹 가치:** Related ⭐⭐⭐⭐⭐ / 구현 ⭐⭐⭐⭐
+
+---
+
+## 7) 논문 작성 활용 메모
+> *“LDE 한계 보정한 새 특징 + DT→FNN + 유형별 보정/리콜”*을 **Method**·**Discussion**에 비교 축으로 활용.
+
+---
+
+## 8) 참고 자료
+- **ENS/SRS/SDS 분해**, LDE 임계(**NTM=13**) 설명, **LN=CDF⁻¹(0.9)×3** 등
+
+---
+
+## 9) 구현 체크리스트
+- [ ] 특징추출기(TFPdelay/erise)  
+- [ ] DT 임계 동적 업데이트  
+- [ ] FNN 학습/유형별 보정·리콜  
+- **우선순위:** 🟢 / **담당자:** — / **완료일:** YYYY-MM-DD

@@ -1,0 +1,96 @@
+# 논문 #73: GAN-based Data Augmentation for UWB NLOS Identification Using Machine Learning (ICAIIC 2022)
+
+## 1) 기본 정보
+- **제목:** GAN-based Data Augmentation for UWB NLOS Identification Using Machine Learning
+- **저자:** Duc Hoang Tran, ByungDeok Chung, Yeong Min Jang
+- **저널/학회:** IEEE ICAIIC 2022
+- **출판연도:** 2022
+- **DOI/링크:** 10.1109/ICAIIC54071.2022.9722667
+- **인용 횟수:** —
+
+**3줄 요약**
+1. **GAN**으로 **NLOS 데이터 증강**(소수 클래스) + **오토인코더(Encoder) 특징 추출**로 **ML 분류 정확도** 향상.  
+2. **LR/RF/SVM/XGBoost** 비교—**SVM(+Encoder+GAN)**이 최고, **정확도 최대 ≈ 86.98%**(0–2 m 범위).  
+3. **SNPN-UWB(DWM1000)** 기반 **7개 실내 장소** 데이터, **k=10** 교차검증—환경/거리 변화에도 **지속적 향상**.
+
+**핵심 기여(Contribution)**
+- [x] **시계열(CIR)용 GAN 증강**으로 **클래스 불균형** 해결  
+- [x] **AE-Encoder** 전처리로 **기존 ML** 성능 보강  
+- [x] **실데이터**에서 일반화 검증
+
+---
+
+## 2) 입력 데이터 (Input)
+- **원본 입력:** **CIR(1016 차원)**, LOS/NLOS 라벨
+- **전처리 (pseudo)**
+  1. **AE 학습 → Encoder 특징** 추출  
+  2. **GAN**으로 **NLOS 합성**(noise dim=32, N≈500)  
+  3. ML(LR/RF/SVM/XGB) 학습·평가
+
+**우리 20D 입력과의 매핑**
+
+| 우리 특징 | 논문 특징 | 변환 방법 |
+|---|---|---|
+| CIR/통계 | AE-Encoder 특징 | 20D 특징 스택에 추가 |
+| 클래스 불균형 | GAN 증강 | 트레이닝 파이프라인 적용 |
+| 품질/게이팅 | 분류 확률 | R/Q 가중 연결
+
+- **호환성 평가:** [x] 직접 사용 가능
+
+---
+
+## 3) 모델 아키텍처 (Architecture)
+[CIR] → [**AE-Encoder**] → [**GAN(NLOS 증강)**] → [**ML(SVM 등)**] → [p(LOS/NLOS)]
+
+**우리 모델과 비교**
+
+| 구성 요소 | 논문 | 우리 모델 | 차이점 |
+|---|---|---|---|
+| 증강 | GAN(NLOS) | SMOTE/No | 생성 모델 우위 |
+| 분류기 | SVM/XGB 등 | DL/ML 혼합 | 하이브리드 가능
+
+---
+
+## 4) 학습 방법 (Training)
+- **손실:** AE 재구성, GAN(Adversarial), CE(분류)
+- **검증:** **10-fold CV**, 장소/거리 분할
+
+---
+
+## 5) 실험 및 결과 (Experiments)
+| 설정 | 결과 |
+|---|---:|
+| ML baseline | **~80–84%** |
+| +Encoder | **~82–84%**(소폭↑) |
+| +Encoder+GAN | **최대 ~86.98%** |
+
+---
+
+## 6) 우리 연구와의 관계
+- **유사점:** CIR 기반 NLOS 식별  
+- **차이점:** **생성 기반 증강** 중심  
+- **활용 가능 요소 체크**
+  - [x] GAN 증강 파이프
+  - [x] Encoder 특징 결합
+  - [x] Related Work 인용
+
+**벤치마킹 가치:** Related ⭐⭐⭐⭐ / 구현 ⭐⭐⭐
+
+---
+
+## 7) 논문 작성 활용 메모
+- **초안:** “**GAN 증강+Encoder 특징**으로 **불균형/NLOS 데이터 부족**을 완화, **전통 ML** 성능을 안정적으로 끌어올림.”
+
+---
+
+## 8) 참고 자료
+- **플랫폼:** **SNPN-UWB, DWM1000**  
+- **시나리오:** 7개 실내 장소, 0–2 m 거리 조건 포함
+
+---
+
+## 9) 구현 체크리스트
+- [ ] AE-Encoder 특징 스택  
+- [ ] GAN 증강(검증 루틴 포함)  
+- [ ] SVM/XGB 파이프라인  
+- **우선순위:** 🟢 / **담당자:** — / **완료일:** YYYY-MM-DD
