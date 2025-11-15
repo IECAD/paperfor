@@ -1,0 +1,87 @@
+﻿models:
+  - LS
+  - WLS
+  - EKF
+  - LMKF
+  - PF
+  - FC-SVM
+  - BO-FDT
+  - LSTM
+  - CNN-MLP
+  - FCN-Att
+  - F-BERT
+  - DNN-EKF
+  - Att-LSTM
+  - Proposed_V1
+  - Proposed_V2
+  - Proposed_NoAttention
+  - Proposed_NoMultitask
+  - Proposed_NoSNR
+  - Proposed_8D
+seeds: [42, 43, 44, 45, 46]
+metrics: [MAE, RMSE, CEP95, Accuracy, F1Macro]
+phase: phase1_apple
+phases:
+  phase1_apple:
+    description: Apple-to-Apple 20D comparison
+    models:
+      - LS
+      - WLS
+      - EKF
+      - LMKF
+      - PF
+      - FC-SVM
+      - BO-FDT
+      - LSTM
+      - CNN-MLP
+      - FCN-Att
+      - F-BERT
+      - DNN-EKF
+      - Att-LSTM
+      - Proposed_V1
+      - Proposed_V2
+    default_profile: base
+  phase2_native:
+    description: Native input evaluation with original feature spaces
+    models:
+      - LS
+      - WLS
+      - EKF
+      - LMKF
+      - PF
+      - FC-SVM
+      - BO-FDT
+      - LSTM
+      - CNN-MLP
+      - FCN-Att
+      - F-BERT
+      - DNN-EKF
+      - Att-LSTM
+      - Proposed_V1
+      - Proposed_V2
+    default_profile: base
+    model_inputs:
+      LSTM: cir_496
+      CNN-MLP: cir_991
+      FCN-Att: cir_1016
+      F-BERT: base_8d
+  phase3_ablation:
+    description: Proposed-model ablation suite
+    models:
+      - Proposed_V1
+      - Proposed_NoAttention
+      - Proposed_NoMultitask
+      - Proposed_NoSNR
+      - Proposed_8D
+    default_profile: base
+    model_inputs:
+      Proposed_NoSNR: base_no_snr
+      Proposed_8D: base_8d
+model_inputs:
+  default: base
+  Proposed_V1: base
+  Proposed_V2: base
+  Proposed_NoSNR: base_no_snr
+  Proposed_8D: base_8d
+log_dir: new_bench_02/logs
+results_file: new_bench_02/3_output/results/experiment_metrics.csv
