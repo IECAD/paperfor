@@ -1,1 +1,0 @@
-﻿"Traditional ranging baselines."
